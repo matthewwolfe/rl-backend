@@ -1,0 +1,19 @@
+{
+  "name": "rl-backend",
+  "version": "1.0.0",
+  "description": "RL Backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "NODE_PATH=. node server.js"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matthewwolfe/rl-backend.git"
+  },
+  "author": "Matthew Wolfe",
+  "license": "MIT",
+  "dependencies": {
+    "express": "4.16.3",
+    "sequelize": "4.37.7"
+  }
+}
