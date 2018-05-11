@@ -1,0 +1,3 @@
+{
+    "isLength.min": "{name} must be at least {min} characters long."
+}

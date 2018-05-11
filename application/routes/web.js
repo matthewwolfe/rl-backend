@@ -4,6 +4,6 @@ const AppController = require('application/controllers/AppController');
 
 const router = express.Router();
 
-router.route('/').get(AppController.index);
+router.route('/').get(new AppController().index);
 
 module.exports = router;

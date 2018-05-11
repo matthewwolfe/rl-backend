@@ -1,7 +1,11 @@
+const Validation = require('application/libraries/Validation');
+
+
 class Controller {
 
-    view(response, path) {
-        res.render(path);
+    validate(data, ruleset) {
+        const validator = new Validation();
+        validator.run(data, ruleset);
     }
 }
 

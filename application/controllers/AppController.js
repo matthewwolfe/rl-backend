@@ -3,8 +3,8 @@ const Controller = require('application/core/Controller');
 
 class AppController extends Controller {
 
-    index() {
-        this.view('index.html');
+    index(request, response) {
+        response.render('index.html');
     }
 
     initialize() {
@@ -12,4 +12,4 @@ class AppController extends Controller {
     }
 }
 
-module.exports = new AppController();
+module.exports = AppController;
