@@ -1,7 +1,7 @@
 class Controller {
 
     view(response, path) {
-        response.send(path);
+        res.render(path);
     }
 }
 

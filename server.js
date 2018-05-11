@@ -4,6 +4,8 @@ const webRoutes = require('application/routes/web');
 
 
 const app = express();
+
+app.use(express.static('application/views'));
 app.use('/', webRoutes);
 
 app.listen(3000, () => {
