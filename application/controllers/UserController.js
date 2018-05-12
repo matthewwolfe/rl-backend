@@ -4,6 +4,16 @@ const Controller = require('application/core/Controller');
 
 class UserController extends Controller {
 
+    login(request, response) {
+        super.validate(request.body, {
+            email: [{rule: validator.isEmail}]
+        });
+
+        const { email, password } = request.body;
+
+        response.json({});
+    }
+
     signup(request, response) {
         super.validate(request.body, {
             email: [{rule: validator.isEmail}],
@@ -13,7 +23,9 @@ class UserController extends Controller {
             }]
         });
 
-        response.json(request.body);
+        const { email, password } = request.body;
+
+        response.json({});
     }
 }
 
