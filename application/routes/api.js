@@ -5,6 +5,7 @@ const apiErrorHandler = require('application/middleware/apiErrorHandler');
 
 const router = express.Router();
 
+router.route('/login').post(new UserController().login);
 router.route('/signup').post(new UserController().signup);
 
 // Middleware

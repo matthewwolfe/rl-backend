@@ -1,7 +1,13 @@
 require('dotenv').config();
 const express = require('express');
+const Sequelize = require('sequelize');
 const apiRoutes = require('application/routes/api');
 const webRoutes = require('application/routes/web');
+
+
+const sequelize = new Sequelize('database', 'username', 'password', {
+  dialect: 'mysql'
+});
 
 
 const app = express();

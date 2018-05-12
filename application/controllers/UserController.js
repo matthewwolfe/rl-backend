@@ -1,20 +1,32 @@
+const bcrypt = require('bcrypt');
 const validator = require('validator');
 const Controller = require('application/core/Controller');
+const User = require('application/models/User');
 
 
 class UserController extends Controller {
 
-    login(request, response) {
+    async login(request, response) {
         super.validate(request.body, {
             email: [{rule: validator.isEmail}]
         });
 
         const { email, password } = request.body;
 
-        response.json({});
+        const user = await User.findOne({
+            where: {
+                email: email
+            }
+        });
+
+        const isValid = await bcrypt.compare(password, user.password);
+
+        response.json({
+            user: user
+        });
     }
 
-    signup(request, response) {
+    async signup(request, response) {
         super.validate(request.body, {
             email: [{rule: validator.isEmail}],
             password: [{
@@ -24,8 +36,16 @@ class UserController extends Controller {
         });
 
         const { email, password } = request.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        response.json({});
+        const user = await User.create({
+            email: email,
+            password: hashedPassword
+        });
+
+        response.json({
+            user: user
+        });
     }
 }
 
