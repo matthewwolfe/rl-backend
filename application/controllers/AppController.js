@@ -4,7 +4,9 @@ const Controller = require('application/core/Controller');
 class AppController extends Controller {
 
     index(request, response) {
-        response.render('index.html');
+        super.view(response, 'index.html', {
+            FRONTEND_URL: process.env.FRONTEND_URL
+        });
     }
 
     initialize() {
