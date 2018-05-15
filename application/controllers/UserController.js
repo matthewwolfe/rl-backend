@@ -27,7 +27,7 @@ class UserController {
             throw new HttpError('Invalid login credentials.');
         }
 
-        const token = jwt.sign({id: user.id}, process.env.JWT_SECRET_KEY);
+        const token = jwt.sign({id: user.id}, process.env.JWT_SECRET_KEY, {expiresIn: '24h'});
 
         response.json({
             token: token

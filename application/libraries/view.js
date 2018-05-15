@@ -1,3 +1,6 @@
+const fs = require('fs');
+
+
 function view(response, file, data) {
     fs.readFile(`application/views/${file}`, (error, html) => {
         if (error) {

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const HttpError = require('application/errors/HttpError');
+const array = require('application/libraries/array');
 const view = require('application/libraries/view');
 const Certification = require('application/models/Certification');
 const Color = require('application/models/Color');
@@ -33,9 +34,9 @@ class AppController {
         const rarities = await Rarity.all();
 
         response.json({
-            certifications: certifications,
-            colors: colors,
-            rarities: rarities,
+            certifications: array.keyBy(certifications, 'id'),
+            colors: array.keyBy(colors, 'id'),
+            rarities: array.keyBy(rarities, 'id'),
             user: user
         });
     }
