@@ -1,19 +1,21 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const validator = require('validator');
-const Controller = require('application/core/Controller');
+const HttpError = require('application/errors/HttpError');
+const validation = require('application/libraries/validation');
 const User = require('application/models/User');
 
 
-class UserController extends Controller {
+class UserController {
 
     async login(request, response) {
-        super.validate(request.body, {
+        validation.run(request.body, {
             email: [{rule: validator.isEmail}]
         });
 
         const { email, password } = request.body;
 
-        const user = await User.findOne({
+        const user = await User.scope('withPassword').findOne({
             where: {
                 email: email
             }
@@ -21,13 +23,19 @@ class UserController extends Controller {
 
         const isValid = await bcrypt.compare(password, user.password);
 
+        if (!isValid) {
+            throw new HttpError('Invalid login credentials.');
+        }
+
+        const token = jwt.sign({id: user.id}, process.env.JWT_SECRET_KEY);
+
         response.json({
-            user: user
+            token: token
         });
     }
 
     async signup(request, response) {
-        super.validate(request.body, {
+        validation.run(request.body, {
             email: [{rule: validator.isEmail}],
             password: [{
                 rule: validator.isLength,

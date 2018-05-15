@@ -1,8 +1,8 @@
 class HttpError {
 
-    constructor(errors) {
+    constructor(errors, status = 400) {
         this.errors = errors;
-        this.status = 400;
+        this.status = status;
     }
 
     toString() {
