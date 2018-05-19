@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const HttpError = require('errors/HttpError');
 
 
 function validateToken(request) {
