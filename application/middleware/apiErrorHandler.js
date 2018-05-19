@@ -1,5 +1,5 @@
-const HttpError = require('application/errors/HttpError');
-const ValidationError = require('application/errors/ValidationError');
+const HttpError = require('errors/HttpError');
+const ValidationError = require('errors/ValidationError');
 
 
 function apiErrorHandler(error, request, response, next) {

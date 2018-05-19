@@ -1,3 +1,6 @@
 {
+    "isBoolean": "{name} must be true or false.",
+    "isInt": "{name} is required.",
+    "isInt.min": "{name} must be a number greater than or equal to {min}.",
     "isLength.min": "{name} must be at least {min} characters long."
 }

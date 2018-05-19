@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = require('application/database');
+const sequelize = require('database');
 
 
 const User = sequelize.define('users', {

@@ -1,6 +1,6 @@
-const ValidationError = require('application/errors/ValidationError');
-const lang = require('application/libraries/lang');
-const capitalize = require('application/libraries/string').capitalize;
+const ValidationError = require('errors/ValidationError');
+const lang = require('libraries/lang');
+const capitalize = require('libraries/string').capitalize;
 
 
 function run(data, validation) {
@@ -21,7 +21,7 @@ function run(data, validation) {
     }
 
     if (errors.length) {
-        throw new ValidationError(this.transformErrors(errors));
+        throw new ValidationError(transformErrors(errors));
     }
 }
 

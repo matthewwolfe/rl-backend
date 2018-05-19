@@ -4,7 +4,7 @@
   "description": "RL Backend",
   "main": "server.js",
   "scripts": {
-    "start": "NODE_PATH=. node server.js"
+    "start": "NODE_PATH=./application node server.js"
   },
   "repository": {
     "type": "git",

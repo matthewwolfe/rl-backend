@@ -1,14 +1,14 @@
-const jwt = require('jsonwebtoken');
 const validator = require('validator');
-const HttpError = require('application/errors/HttpError');
-const array = require('application/libraries/array');
-const view = require('application/libraries/view');
-const Certification = require('application/models/Certification');
-const Color = require('application/models/Color');
-const Item = require('application/models/Item');
-const ItemType = require('application/models/ItemType');
-const Rarity = require('application/models/Rarity');
-const User = require('application/models/User');
+const HttpError = require('errors/HttpError');
+const array = require('libraries/array');
+const session = require('libraries/session');
+const view = require('libraries/view');
+const Certification = require('models/Certification');
+const Color = require('models/Color');
+const Item = require('models/Item');
+const ItemType = require('models/ItemType');
+const Rarity = require('models/Rarity');
+const User = require('models/User');
 
 
 class AppController {
@@ -20,15 +20,7 @@ class AppController {
     }
 
     async initialize(request, response) {
-        const { token } = request.query;
-
-        try {
-            var { id } = jwt.verify(token, process.env.JWT_SECRET_KEY);
-
-        }
-        catch (error) {
-            throw new HttpError(error.message);
-        }
+        const { id } = session.validateToken(request);
 
         const user = await User.findById(id);
         const certifications = await Certification.all();

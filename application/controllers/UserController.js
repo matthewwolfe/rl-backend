@@ -1,12 +1,43 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
-const HttpError = require('application/errors/HttpError');
-const validation = require('application/libraries/validation');
-const User = require('application/models/User');
+const HttpError = require('errors/HttpError');
+const session = require('libraries/session');
+const validation = require('libraries/validation');
+const InventoryItem = require('models/InventoryItem');
+const Trade = require('models/Trade');
+const User = require('models/User');
 
 
 class UserController {
+
+    async inventory(request, response) {
+        session.validateToken(request);
+
+        validation.run(request.query, {
+            id: [{
+                rule: validator.isInt,
+                options: {min: 1}
+            }]
+        });
+
+        const { id } = request.query;
+        const user = await User.findById(id);
+
+        if (!user) {
+            throw new HttpError('Unable to find user.', 404);
+        }
+
+        const inventoryItems = await InventoryItem.findAll({
+            where: {
+                userId: user.id
+            }
+        });
+
+        response.json({
+            inventoryItems: inventoryItems
+        });
+    }
 
     async login(request, response) {
         validation.run(request.body, {
@@ -44,6 +75,17 @@ class UserController {
         });
 
         const { email, password } = request.body;
+
+        const userWithEmail = await User.findOne({
+            where: {
+                email: email
+            }
+        });
+
+        if (userWithEmail) {
+            throw new HttpError('This email address is already in use.');
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await User.create({
@@ -53,6 +95,35 @@ class UserController {
 
         response.json({
             user: user
+        });
+    }
+
+    // Retrieves all trades for a user
+    async trades(request, response) {
+        session.validateToken(request);
+
+        validation.run(request.query, {
+            id: [{
+                rule: validator.isInt,
+                options: {min: 1}
+            }]
+        });
+
+        const { id } = request.query;
+        const user = await User.findById(id);
+
+        if (!user) {
+            throw new HttpError('Unable to find user.', 404);
+        }
+
+        const trades = await Trade.findAll({
+            where: {
+                userId: user.id
+            }
+        });
+
+        response.json({
+            trades: trades
         });
     }
 }
