@@ -9,7 +9,7 @@ function validateToken(request) {
         return jwt.verify(token, process.env.JWT_SECRET_KEY);
     }
     catch (error) {
-        throw new HttpError(error.message);
+        throw new HttpError(error.message, 401);
     }
 }
 

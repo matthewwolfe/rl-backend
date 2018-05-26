@@ -1,3 +1,4 @@
+const validator = require('validator');
 const ValidationError = require('errors/ValidationError');
 const lang = require('libraries/lang');
 const capitalize = require('libraries/string').capitalize;
@@ -34,6 +35,22 @@ function transformErrors(errors) {
     );
 }
 
+function isPresent(value) {
+    return value !== undefined && value !== null;
+}
+
+function isRequired(value) {
+    return isPresent(value) && value;
+}
+
 module.exports = {
-    run
+    run,
+    rules: {
+        isBoolean: validator.isBoolean,
+        isEmail: validator.isEmail,
+        isIn: validator.isIn,
+        isInt: validator.isInt,
+        isLength: validator.isLength,
+        isRequired: isRequired
+    }
 };

@@ -1,4 +1,3 @@
-const validator = require('validator');
 const HttpError = require('errors/HttpError');
 const session = require('libraries/session');
 const validation = require('libraries/validation');
@@ -12,7 +11,7 @@ class InventoryController {
 
         validation.run(request.body, {
             id: [{
-                rule: validator.isInt,
+                rule: validation.rules.isInt,
                 options: {min: 1}
             }]
         });
@@ -41,20 +40,20 @@ class InventoryController {
         const { userId } = session.validateToken(request);
 
         validation.run(request.body, {
-            certificationId: [{rule: validator.isInt}],
-            colorId: [{rule: validator.isInt}],
-            crateId: [{rule: validator.isInt}],
-            id: [{rule: validator.isInt}],
+            certificationId: [{rule: validation.rules.isInt}],
+            colorId: [{rule: validation.rules.isInt}],
+            crateId: [{rule: validation.rules.isInt}],
+            id: [{rule: validation.rules.isInt}],
             itemId: [{
-                rule: validator.isInt,
+                rule: validation.rules.isInt,
                 options: {min: 1}
             }],
             quantity: [{
-                rule: validator.isInt,
+                rule: validation.rules.isInt,
                 options: {min: 1}
             }],
-            rarityId: [{rule: validator.isInt}],
-            tradeable: [{rule: validator.isBoolean}],
+            rarityId: [{rule: validation.rules.isInt}],
+            tradeable: [{rule: validation.rules.isBoolean}],
         });
 
         const { certificationId, colorId, crateId, id, itemId, quantity, rarityId, tradeable } = request.body;

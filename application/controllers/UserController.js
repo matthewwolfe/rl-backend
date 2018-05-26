@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const validator = require('validator');
 const HttpError = require('errors/HttpError');
 const session = require('libraries/session');
 const validation = require('libraries/validation');
@@ -16,7 +15,7 @@ class UserController {
 
         validation.run(request.query, {
             id: [{
-                rule: validator.isInt,
+                rule: validation.rules.isInt,
                 options: {min: 1}
             }]
         });
@@ -41,7 +40,10 @@ class UserController {
 
     async login(request, response) {
         validation.run(request.body, {
-            email: [{rule: validator.isEmail}]
+            email: [
+                {rule: validation.rules.isRequired},
+                {rule: validation.rules.isEmail}
+            ]
         });
 
         const { email, password } = request.body;
@@ -65,11 +67,40 @@ class UserController {
         });
     }
 
+    async saveSettings(request, response) {
+        const { id } = session.validateToken(request);
+
+        validation.run(request.body, {
+            gamertag: [{rule: validation.rules.isPresent}],
+            psn: [{rule: validation.rules.isPresent}],
+            steam: [{rule: validation.rules.isPresent}],
+            switch: [{rule: validation.rules.isPresent}]
+        });
+
+        const { gamertag, psn, steam, switch: switchAccount } = request.body;
+
+        const user = await User.findById(id);
+
+        if (!user) {
+            throw new HttpError('Unable to save user settings');
+        }
+
+        user.gamertag = gamertag;
+        user.psn = psn;
+        user.steam = steam;
+        user.switch = switchAccount;
+        user = await user.save();
+
+        response.json({
+            user: user
+        });
+    }
+
     async signup(request, response) {
         validation.run(request.body, {
-            email: [{rule: validator.isEmail}],
+            email: [{rule: validation.rules.isEmail}],
             password: [{
-                rule: validator.isLength,
+                rule: validation.rules.isLength,
                 options: {min: 8}
             }]
         });
@@ -104,7 +135,7 @@ class UserController {
 
         validation.run(request.query, {
             id: [{
-                rule: validator.isInt,
+                rule: validation.rules.isInt,
                 options: {min: 1}
             }]
         });
