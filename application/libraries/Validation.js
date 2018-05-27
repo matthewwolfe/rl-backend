@@ -11,7 +11,14 @@ function run(data, validation) {
         const rules = validation[property];
 
         rules.forEach((rule) => {
-            if (rule.rule(data[property] + '', rule.options) === false) {
+            let value = data[property];
+
+            // Don't convert values for custom rules to string, because then other data types can be validated
+            if (!customRules.hasOwnProperty(rule.rule.name)) {
+                value = value + '';
+            }
+
+            if (rule.rule(value, rule.options) === false) {
                 errors.push({
                     name: property,
                     rule: rule.rule.name,
@@ -27,12 +34,18 @@ function run(data, validation) {
 }
 
 function transformErrors(errors) {
-    return errors.map(error =>
-        lang(`validation.${error.rule}.${Object.keys(error.options).join('.')}`, {
+    return errors.map(error => {
+        const options = error.options ? `.${Object.keys(error.options).join('.')}` : '';
+
+        return lang(`validation.${error.rule}${options}`, {
             ...error.options,
             name: capitalize(error.name)
-        })
-    );
+        });
+    });
+}
+
+function isArray(value) {
+    return Array.isArray(value);
 }
 
 function isPresent(value) {
@@ -43,14 +56,13 @@ function isRequired(value) {
     return isPresent(value) && value;
 }
 
+const customRules = {
+    isArray: isArray,
+    isPresent: isPresent,
+    isRequired: isRequired
+};
+
 module.exports = {
     run,
-    rules: {
-        isBoolean: validator.isBoolean,
-        isEmail: validator.isEmail,
-        isIn: validator.isIn,
-        isInt: validator.isInt,
-        isLength: validator.isLength,
-        isRequired: isRequired
-    }
+    rules: Object.assign({}, validator, customRules)
 };

@@ -1,3 +1,4 @@
+const sequelize = require('database');
 const constants = require('config/constants');
 const HttpError = require('errors/HttpError');
 const session = require('libraries/session');
@@ -42,32 +43,57 @@ class TradeController {
         session.validateToken(request);
 
         validation.run(request.body, {
-            id: [{
-                rule: validation.rules.isInt
-            }],
-            description: [{
-                rule: validation.rules.isPresent
-            }],
+            id: [{rule: validation.rules.isInt}],
+            description: [{rule: validation.rules.isPresent}],
+            haveItems: [{rule: validation.rules.isArray}],
             platform: [{
                 rule: validation.rules.isIn,
                 options: constants.PLATFORMS
-            }]
+            }],
+            wantItems: [{rule: validation.rules.isArray}]
         });
 
-        const { id, description, platform, tradeItems } = request.body;
+        const { id, description, haveItems, platform, wantItems } = request.body;
 
-        let trade = Trade.build({});
+        haveItems.forEach(item => item.type = 'have');
+        wantItems.forEach(item => item.type = 'want');
+
+        var trade = Trade.build({});
+        var tradeItems = haveItems.concat(wantItems);
 
         if (id) {
-            trade = Trade.findById(id);
+            trade = await Trade.findById(id);
+
+            if (!trade) {
+                throw new HttpError('Unable to save trade.');
+            }
         }
 
         trade.description = description;
         trade.platform = platform;
-        trade = await trade.save();
+
+        await sequelize.transaction(async (transaction) => {
+
+            // Delete existing trade items
+            await TradeItem.destroy({where: {tradeId: trade.id}}, {transaction: transaction});
+
+            // Save or update trade
+            trade = await trade.save({transaction: transaction});
+
+            // Add the trade id to trade items, then save those
+            tradeItems.forEach(tradeItem => tradeItem.tradeId = trade.id);
+            await TradeItem.bulkCreate(tradeItems);
+        });
+
+        tradeItems = await TradeItem.findAll({
+            where: {
+                tradeId: trade.id
+            }
+        });
 
         response.json({
-            trade: trade
+            trade: trade,
+            tradeItems: tradeItems
         });
     }
 }

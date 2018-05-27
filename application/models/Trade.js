@@ -10,6 +10,7 @@ const Trade = sequelize.define('trades', {
     },
     userId: Sequelize.INTEGER,
     description: Sequelize.TEXT,
+    platform: Sequelize.ENUM('', 'pc', 'ps4', 'switch', 'xbox'),
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE
 });
