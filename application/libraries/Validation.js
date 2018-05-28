@@ -53,7 +53,7 @@ function isPresent(value) {
 }
 
 function isRequired(value) {
-    return isPresent(value) && value;
+    return isPresent(value) && !!value;
 }
 
 const customRules = {

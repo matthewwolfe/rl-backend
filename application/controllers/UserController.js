@@ -43,7 +43,8 @@ class UserController {
             email: [
                 {rule: validation.rules.isRequired},
                 {rule: validation.rules.isEmail}
-            ]
+            ],
+            password: [{rule: validation.rules.isRequired}]
         });
 
         const { email, password } = request.body;
