@@ -10,10 +10,22 @@ const TradeItem = sequelize.define('tradeItems', {
     },
     tradeId: Sequelize.INTEGER,
     itemId: Sequelize.INTEGER,
-    certificationId: Sequelize.INTEGER,
-    colorId: Sequelize.INTEGER,
-    crateId: Sequelize.INTEGER,
-    rarityId: Sequelize.INTEGER,
+    certificationId: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+    },
+    colorId: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+    },
+    crateId: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+    },
+    rarityId: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+    },
     type: Sequelize.ENUM('', 'have', 'want'),
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE

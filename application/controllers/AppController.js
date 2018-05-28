@@ -1,4 +1,3 @@
-const validator = require('validator');
 const HttpError = require('errors/HttpError');
 const array = require('libraries/array');
 const session = require('libraries/session');
