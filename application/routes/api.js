@@ -10,6 +10,7 @@ const asyncMiddleware = require('middleware/asyncMiddleware');
 
 const router = express.Router();
 
+router.route('/change_password').post(asyncMiddleware(new UserController().changePassword));
 router.route('/initialize').get(asyncMiddleware(new AppController().initialize));
 router.route('/inventory/remove_item').post(asyncMiddleware(new InventoryController().removeItem));
 router.route('/inventory/save_item').post(asyncMiddleware(new InventoryController().saveItem));

@@ -1,14 +1,45 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const HttpError = require('errors/HttpError');
+const array = require('libraries/array');
 const session = require('libraries/session');
 const validation = require('libraries/validation');
 const InventoryItem = require('models/InventoryItem');
 const Trade = require('models/Trade');
+const TradeItem = require('models/TradeItem');
 const User = require('models/User');
 
 
 class UserController {
+
+    async changePassword(request, response) {
+        const { id } = session.validateToken(request);
+
+        validation.run(request.body, {
+            password: [{
+                rule: validation.rules.isLength,
+                options: {min: 8}
+            }],
+            passwordConfirm: [{
+                rule: validation.rules.isLength,
+                options: {min: 8}
+            }]
+        });
+
+        const { password, passwordConfirm } = request.body;
+
+        if (password !== passwordConfirm) {
+            throw new HttpError('The passwords do not match.');
+        }
+
+        let user = await User.findById(id);
+        user.password = await bcrypt.hash(password, 10);
+        user = await user.save();
+
+        response.json({
+            user: user
+        });
+    }
 
     async inventory(request, response) {
         session.validateToken(request);
@@ -103,10 +134,18 @@ class UserController {
             password: [{
                 rule: validation.rules.isLength,
                 options: {min: 8}
+            }],
+            passwordConfirm: [{
+                rule: validation.rules.isLength,
+                options: {min: 8}
             }]
         });
 
-        const { email, password } = request.body;
+        const { email, password, passwordConfirm } = request.body;
+
+        if (password !== passwordConfirm) {
+            throw new HttpError('The passwords do not match.');
+        }
 
         const userWithEmail = await User.findOne({
             where: {
@@ -153,9 +192,15 @@ class UserController {
                 userId: user.id
             }
         });
+        const tradeItems = await TradeItem.findAll({
+            where: {
+                tradeId: trades.map(trade => trade.id)
+            }
+        });
 
         response.json({
-            trades: trades
+            trades: array.keyBy(trades, 'id'),
+            tradeItems: array.keyBy(tradeItems, 'id')
         });
     }
 }
