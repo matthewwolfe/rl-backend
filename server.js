@@ -1,17 +1,24 @@
 require('dotenv').config();
 const express = require('express');
-const Sequelize = require('sequelize');
+const WebSocket = require('ws');
 const apiRoutes = require('routes/api');
 const webRoutes = require('routes/web');
 
 
-const app = express();
+const httpServer = express();
+const webSocketServer = new WebSocket.Server({
+    port: 8080
+});
 
-app.use(express.json());
-app.use('/api', apiRoutes);
-app.use('/', webRoutes);
-app.use(express.static('views'));
+webSocketServer.on('connection', (ws, request) => {
+    console.log('here');
+});
 
-app.listen(3000, () => {
+httpServer.use(express.json());
+httpServer.use('/api', apiRoutes);
+httpServer.use('/', webRoutes);
+httpServer.use(express.static('views'));
+
+httpServer.listen(3000, () => {
     console.log('Server listening on port 3000');
-})
+});

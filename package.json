@@ -19,6 +19,7 @@
     "jsonwebtoken": "8.2.1",
     "moustache": "0.0.2",
     "mysql2": "1.5.3",
-    "sequelize": "4.37.7"
+    "sequelize": "4.37.7",
+    "ws": "^5.2.0"
   }
 }
