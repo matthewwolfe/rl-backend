@@ -22,6 +22,7 @@ router.route('/settings/save').post(asyncMiddleware(new SettingController().save
 router.route('/signup').post(asyncMiddleware(new UserController().signup));
 router.route('/system_notifications/dashboard').get(asyncMiddleware(new SystemNotificationController().dashboard));
 router.route('/trades/build').get(asyncMiddleware(new TradeController().build));
+router.route('/trades/delete').post(asyncMiddleware(new TradeController().delete));
 router.route('/trades/save').post(asyncMiddleware(new TradeController().save));
 router.route('/users/inventory').get(asyncMiddleware(new UserController().inventory));
 router.route('/users/trades').get(asyncMiddleware(new UserController().trades));

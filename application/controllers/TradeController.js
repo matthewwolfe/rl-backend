@@ -39,8 +39,25 @@ class TradeController {
         });
     }
 
-    async save(request, response) {
+    async delete(request, response) {
         session.validateToken(request);
+
+        validation.run(request.body, {
+            id: [{rule: validation.rules.isInt}]
+        });
+
+        const { id } = request.body;
+
+        await sequelize.transaction(async (transaction) => {
+            await Trade.destroy({where: {id: id}}, {transaction: transaction});
+            await TradeItem.destroy({where: {tradeId: id}}, {transaction: transaction});
+        });
+
+        response.json({});
+    }
+
+    async save(request, response) {
+        const { id: userId } = session.validateToken(request);
 
         validation.run(request.body, {
             id: [{rule: validation.rules.isInt}],
@@ -71,6 +88,7 @@ class TradeController {
 
         trade.description = description;
         trade.platform = platform;
+        trade.userId = userId;
 
         await sequelize.transaction(async (transaction) => {
 
