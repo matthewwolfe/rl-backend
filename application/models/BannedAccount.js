@@ -2,18 +2,16 @@ const Sequelize = require('sequelize');
 const sequelize = require('database');
 
 
-const Trade = sequelize.define('trades', {
+const BannedAccount = sequelize.define('bannedAccounts', {
     id: {
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
     },
-    userId: Sequelize.INTEGER,
-    description: Sequelize.TEXT,
     platform: Sequelize.ENUM('', 'pc', 'ps4', 'switch', 'xbox'),
-    flagged: Sequelize.BOOLEAN,
+    account: Sequelize.STRING,
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE
 });
 
-module.exports = Trade;
+module.exports = BannedAccount;

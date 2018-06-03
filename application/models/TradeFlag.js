@@ -2,18 +2,17 @@ const Sequelize = require('sequelize');
 const sequelize = require('database');
 
 
-const Trade = sequelize.define('trades', {
+const TradeFlag = sequelize.define('tradeFlags', {
     id: {
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
     },
+    tradeId: Sequelize.INTEGER,
     userId: Sequelize.INTEGER,
-    description: Sequelize.TEXT,
-    platform: Sequelize.ENUM('', 'pc', 'ps4', 'switch', 'xbox'),
-    flagged: Sequelize.BOOLEAN,
+    reason: Sequelize.TEXT,
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE
 });
 
-module.exports = Trade;
+module.exports = TradeFlag;

@@ -14,6 +14,7 @@ const User = sequelize.define('users', {
     psn: Sequelize.STRING,
     steam: Sequelize.STRING,
     switch: Sequelize.STRING,
+    active: Sequelize.BOOLEAN,
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE
 }, {

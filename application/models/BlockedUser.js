@@ -2,18 +2,17 @@ const Sequelize = require('sequelize');
 const sequelize = require('database');
 
 
-const Trade = sequelize.define('trades', {
+const BlockedUser = sequelize.define('blockedUsers', {
     id: {
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
     },
     userId: Sequelize.INTEGER,
-    description: Sequelize.TEXT,
-    platform: Sequelize.ENUM('', 'pc', 'ps4', 'switch', 'xbox'),
-    flagged: Sequelize.BOOLEAN,
+    blockedUserId: Sequelize.INTEGER,
+    reason: Sequelize.TEXT,
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE
 });
 
-module.exports = Trade;
+module.exports = BlockedUser;
