@@ -4,6 +4,7 @@ const HttpError = require('errors/HttpError');
 const session = require('libraries/session');
 const validation = require('libraries/validation');
 const Trade = require('models/Trade');
+const TradeFlag = require('models/TradeFlag');
 const TradeItem = require('models/TradeItem');
 
 
@@ -54,6 +55,38 @@ class TradeController {
         });
 
         response.json({});
+    }
+
+    async flag(request, response) {
+        const { id: userId } = session.validateToken(request);
+
+        validation.run(request.body, {
+            id: [{rule: validation.rules.isInt}],
+            reason: [{rule: validation.rules.isPresent}]
+        });
+
+        const { id, reason } = request.body;
+
+        const flagCount = await TradeFlag.count({
+            where: {
+                tradeId: id,
+                userId: userId
+            }
+        });
+
+        if (flagCount > 0) {
+            throw new HttpError('Unable to flag trade that you have already flagged.');
+        }
+
+        const tradeFlag = await TradeFlag.create({
+            reason: reason,
+            tradeId: id,
+            userId: userId
+        });
+
+        response.json({
+            tradeFlag: tradeFlag
+        });
     }
 
     async save(request, response) {
