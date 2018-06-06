@@ -1,0 +1,8 @@
+module.exports = {
+    RECEIVING: {
+        GET_UNREAD_MESSAGE_COUNT: 'GET_UNREAD_MESSAGE_COUNT'
+    },
+    SENDING: {
+        UNREAD_MESSAGE_COUNT: 'UNREAD_MESSAGE_COUNT'
+    }
+};
