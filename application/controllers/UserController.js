@@ -160,6 +160,10 @@ class UserController {
     async signup(request, response) {
         validation.run(request.body, {
             email: [{rule: validation.rules.isEmail}],
+            username: [{
+                rule: validation.rules.isLength,
+                options: {min: 6}
+            }]
             password: [{
                 rule: validation.rules.isLength,
                 options: {min: 8}
@@ -170,7 +174,7 @@ class UserController {
             }]
         });
 
-        const { email, password, passwordConfirm } = request.body;
+        const { email, password, passwordConfirm, username } = request.body;
 
         if (password !== passwordConfirm) {
             throw new HttpError('The passwords do not match.');
@@ -186,11 +190,22 @@ class UserController {
             throw new HttpError('This email address is already in use.');
         }
 
+        const userWithUsername = await User.findOne({
+            where: {
+                username: username
+            }
+        });
+
+        if (userWithUsername) {
+            throw new HttpError('This username is already in use.');
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await User.create({
             email: email,
-            password: hashedPassword
+            password: hashedPassword,
+            username: username
         });
 
         response.json({
