@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Op = require('sequelize').Op;
 const HttpError = require('errors/HttpError');
 const array = require('libraries/array');
 const session = require('libraries/session');
@@ -125,6 +126,34 @@ class UserController {
 
         response.json({
             user: user
+        });
+    }
+
+    async search(request, response) {
+        const { id } = session.validateToken(request);
+
+        validation.run(request.body, {
+            username: [{rule: validation.rules.isPresent}]
+        });
+
+        const { username } = request.body;
+
+        const users = await User.findAll({
+            order: [
+                ['username', 'ASC']
+            ],
+            where: {
+                id: {
+                    [Op.ne]: id
+                },
+                username: {
+                    [Op.like]: `%${username}%`
+                }
+            }
+        });
+
+        response.json({
+            users: users
         });
     }
 

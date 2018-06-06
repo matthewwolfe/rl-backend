@@ -1,11 +1,11 @@
 const routes = new Map();
 
 // Handles an incoming message by retrieving the route and calling the method
-function handleMessage(user, message) {
+function handleMessage(user, message, users) {
     const { type, data } = message;
 
     const method = routes.get(type);
-    method(user, data);
+    method(user, data, users);
 }
 
 // Adds an incoming route to the routes Map

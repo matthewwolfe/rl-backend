@@ -10,6 +10,7 @@ const User = sequelize.define('users', {
     },
     email: Sequelize.STRING,
     password: Sequelize.STRING,
+    username: Sequelize.STRING,
     gamertag: Sequelize.STRING,
     psn: Sequelize.STRING,
     steam: Sequelize.STRING,

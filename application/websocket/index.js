@@ -24,7 +24,7 @@ class User {
     }
 
     message(message) {
-        router.handleMessage(this, JSON.parse(message));
+        router.handleMessage(this, JSON.parse(message), users);
     }
 
     send(type, data = {}) {
