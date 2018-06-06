@@ -26,6 +26,10 @@ const TradeItem = sequelize.define('tradeItems', {
         type: Sequelize.INTEGER,
         defaultValue: 0
     },
+    quantity: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1
+    },
     type: Sequelize.ENUM('', 'have', 'want'),
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE

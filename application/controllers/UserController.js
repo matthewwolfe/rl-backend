@@ -163,7 +163,7 @@ class UserController {
             username: [{
                 rule: validation.rules.isLength,
                 options: {min: 6}
-            }]
+            }],
             password: [{
                 rule: validation.rules.isLength,
                 options: {min: 8}
