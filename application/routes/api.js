@@ -17,6 +17,7 @@ router.route('/initialize').get(asyncMiddleware(new AppController().initialize))
 router.route('/inventory/remove_item').post(asyncMiddleware(new InventoryController().removeItem));
 router.route('/inventory/save_item').post(asyncMiddleware(new InventoryController().saveItem));
 router.route('/login').post(asyncMiddleware(new UserController().login));
+router.route('/messages/conversations').get(asyncMiddleware(new MessageController().conversations));
 router.route('/messages/unread_count').get(asyncMiddleware(new MessageController().unreadCount));
 router.route('/settings/save').post(asyncMiddleware(new SettingController().save));
 router.route('/signup').post(asyncMiddleware(new UserController().signup));
