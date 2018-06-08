@@ -11,7 +11,7 @@ class Pagination {
         this.data = [];
         this.lastPage;
         this.limit = 15;
-        this.page = options.page;
+        this.page = parseInt(options.page);
         this.total;
 
         if (options.hasOwnProperty('limit')) {

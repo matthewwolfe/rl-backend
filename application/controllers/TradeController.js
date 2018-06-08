@@ -95,7 +95,16 @@ class TradeController {
     async paginate(request, response) {
         const { id: userId } = session.validateToken(request);
 
-        const pagination = new Pagination(Trade, {
+        validation.run(request.query, {
+            page: [{
+                rule: validation.rules.isInt,
+                options: {min: 1}
+            }]
+        });
+
+        const { page } = request.query;
+
+        const pagination = new Pagination(Trade, {page: page}, {
             order: [
                 ['updatedAt', 'DESC']
             ],
