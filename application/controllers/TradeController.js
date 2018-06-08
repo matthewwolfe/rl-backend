@@ -1,6 +1,9 @@
+const Op = require('sequelize').Op;
 const sequelize = require('database');
 const constants = require('config/constants');
 const HttpError = require('errors/HttpError');
+const array = require('libraries/array');
+const Pagination = require('libraries/pagination');
 const session = require('libraries/session');
 const validation = require('libraries/validation');
 const Trade = require('models/Trade');
@@ -86,6 +89,37 @@ class TradeController {
 
         response.json({
             tradeFlag: tradeFlag
+        });
+    }
+
+    async paginate(request, response) {
+        const { id: userId } = session.validateToken(request);
+
+        const pagination = new Pagination(Trade, {
+            order: [
+                ['updatedAt', 'DESC']
+            ],
+            /*
+            where: {
+                userId: {
+                    [Op.ne]: userId
+                }
+            }
+            */
+        });
+
+        await pagination.paginate();
+        const tradeIds = pagination.ids();
+
+        const tradeItems = await TradeItem.findAll({
+            where: {
+                tradeId: tradeIds
+            }
+        });
+
+        response.json({
+            pagination: pagination.results(),
+            tradeItems: array.keyBy(tradeItems, 'id')
         });
     }
 
