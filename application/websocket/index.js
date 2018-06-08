@@ -38,7 +38,15 @@ function broadcast() {
 
 function connection(ws, request) {
     const token = request.url.substring(request.url.indexOf('=') + 1);
-    const { id } = session.validateToken(token);
+
+    try {
+        const { id } = session.validateToken(token);
+    }
+    catch (e) {
+        // TODO: Don't allow websocket to connect if token is not valid, ie: expired, invalid.
+        console.log(error);
+        return;
+    }
 
     const user = new User(ws, id);
     users.set(id, user);

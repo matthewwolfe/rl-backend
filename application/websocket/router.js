@@ -5,7 +5,13 @@ function handleMessage(user, message, users) {
     const { type, data } = message;
 
     const method = routes.get(type);
-    method(user, data, users);
+
+    try {
+        method(user, data, users);
+    }
+    catch (e) {
+        console.log(error);
+    }
 }
 
 // Adds an incoming route to the routes Map
