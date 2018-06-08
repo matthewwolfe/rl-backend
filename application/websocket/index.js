@@ -40,7 +40,7 @@ function connection(ws, request) {
     const token = request.url.substring(request.url.indexOf('=') + 1);
 
     try {
-        const { id } = session.validateToken(token);
+        var { id } = session.validateToken(token);
     }
     catch (e) {
         // TODO: Don't allow websocket to connect if token is not valid, ie: expired, invalid.
