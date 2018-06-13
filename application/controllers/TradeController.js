@@ -3,7 +3,7 @@ const sequelize = require('database');
 const constants = require('config/constants');
 const HttpError = require('errors/HttpError');
 const array = require('libraries/array');
-const Pagination = require('libraries/pagination');
+const Pagination = require('libraries/Pagination');
 const session = require('libraries/session');
 const validation = require('libraries/validation');
 const Trade = require('models/Trade');
@@ -95,40 +95,64 @@ class TradeController {
     async paginate(request, response) {
         const { id: userId } = session.validateToken(request);
 
-        validation.run(request.query, {
+        validation.run(request.body, {
             page: [{
                 rule: validation.rules.isInt,
                 options: {min: 1}
+            }],
+            platform: [{rule: validation.rules.isPresent}],
+            searchFilters: [{rule: validation.rules.isPresent}],
+            type: [{
+                rule: validation.rules.isIn,
+                options: ['have', 'want']
             }]
         });
 
-        const { page } = request.query;
+        const { page, platform, searchFilters, type } = request.body;
+
+        const tradeWhere = {};
+        const tradeItemsWhere = {
+            type: type
+        };
+
+        searchFilters.forEach((searchFilter) => {
+            for (const key in searchFilter) {
+                if(searchFilter[key]) {
+                    tradeItemsWhere[key] = searchFilter[key];
+                }
+            }
+        });
+
+        if (platform) {
+            tradeWhere.platform = platform;
+        }
+
+        const sql = `
+            SELECT DISTINCT(tradeItems.tradeId)
+            FROM tradeItems, trades
+            WHERE tradeItems.tradeId = trades.id
+            AND tradeItems.type = ?
+            LIMIT 10
+            OFFSET
+        `;
 
         const pagination = new Pagination(Trade, {page: page}, {
+            include: [
+                {
+                    model: TradeItem,
+                    where: tradeItemsWhere
+                }
+            ],
             order: [
                 ['updatedAt', 'DESC']
             ],
-            /*
-            where: {
-                userId: {
-                    [Op.ne]: userId
-                }
-            }
-            */
+            where: tradeWhere
         });
 
         await pagination.paginate();
-        const tradeIds = pagination.ids();
-
-        const tradeItems = await TradeItem.findAll({
-            where: {
-                tradeId: tradeIds
-            }
-        });
 
         response.json({
-            pagination: pagination.results(),
-            tradeItems: array.keyBy(tradeItems, 'id')
+            sql
         });
     }
 

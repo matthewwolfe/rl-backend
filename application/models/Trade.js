@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = require('database');
+const TradeItem = require('models/TradeItem');
 
 
 const Trade = sequelize.define('trades', {
@@ -15,5 +16,7 @@ const Trade = sequelize.define('trades', {
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE
 });
+
+Trade.hasMany(TradeItem, {foreignKey: 'tradeId'});
 
 module.exports = Trade;
