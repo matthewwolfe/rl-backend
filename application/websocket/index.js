@@ -42,7 +42,7 @@ function connection(ws, request) {
     try {
         var { id } = session.validateToken(token);
     }
-    catch (e) {
+    catch (error) {
         // TODO: Don't allow websocket to connect if token is not valid, ie: expired, invalid.
         console.log(error);
         return;
