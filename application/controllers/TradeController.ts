@@ -115,12 +115,18 @@ class TradeController
         });
 
         const tradeIds = await query.get();
-        const trades = await Trade.whereIn('id', tradeIds.pluck('tradeId')).get();
-        const tradeItems = await TradeItem.whereIn('tradeId', tradeIds.pluck('tradeId')).get();
+        let trades = [];
+        let tradeItems: any = {};
+
+        if (tradeIds.length > 0) {
+            trades = await Trade.whereIn('id', tradeIds.pluck('tradeId')).get();
+            tradeItems = await TradeItem.whereIn('tradeId', tradeIds.pluck('tradeId')).get();
+            tradeItems = tradeItems.groupBy('tradeId');
+        }
 
         response.json({
             trades: trades,
-            tradeItems: tradeItems.groupBy('tradeId')
+            tradeItems: tradeItems
         });
     }
 
