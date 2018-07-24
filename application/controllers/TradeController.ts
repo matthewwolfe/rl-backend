@@ -2,7 +2,7 @@ import { constants } from 'config/constants';
 import { HttpError } from 'errors/HttpError';
 import { session } from 'libraries/session';
 import { validation } from 'libraries/validation';
-import { Trade, TradeFlag } from 'models';
+import { Trade, TradeFlag, TradeItem } from 'models';
 
 
 class TradeController
@@ -104,11 +104,12 @@ class TradeController
         haveItems.forEach(item => item.type = 'have');
         wantItems.forEach(item => item.type = 'want');
 
-        var trade = new Trade();
+        var trade: any = new Trade();
         var tradeItems = haveItems.concat(wantItems);
 
         if (id) {
             trade = await Trade.findById(id);
+            await trade.tradeItems().delete();
 
             if (!trade) {
                 throw new HttpError('Unable to save trade.');
@@ -118,6 +119,13 @@ class TradeController
         trade.description = description;
         trade.platform = platform;
         trade.userId = userId;
+        await trade.save();
+
+        tradeItems.forEach((tradeItem) => {
+            const item = new TradeItem(tradeItem);
+            item.tradeId = trade.id;
+            item.save();
+        });
 
         response.json({});
     }
