@@ -84,6 +84,46 @@ class TradeController
         });
     }
 
+    async paginate(request, response)
+    {
+        validation.run(request.body, {
+            platform: [{rule: validation.rules.isPresent}],
+            page: [{rule: validation.rules.isInt}],
+            searchFilters: [{rule: validation.rules.isArray}],
+            type: [{rule: validation.rules.isPresent}]
+        });
+
+        const { platform, page, searchFilters, type } = request.body;
+
+        const query = TradeItem.select(['tradeItems.tradeId'])
+            .distinct()
+            .join('trades', 'tradeItems.tradeId', '=', 'trades.id')
+            .where('tradeItems.type', '=', type)
+            .limit(10)
+            .offset((page - 1) * 10);
+
+        if (platform) {
+            query.where('trades.platform', '=', platform);
+        }
+
+        searchFilters.forEach((searchFilter) => {
+            for (const key in searchFilter) {
+                if (searchFilter[key]) {
+                    query.where(`tradeItems.${key}`, '=', searchFilter[key]);
+                }
+            }
+        });
+
+        const tradeIds = await query.get();
+        const trades = await Trade.whereIn('id', tradeIds.pluck('tradeId')).get();
+        const tradeItems = await TradeItem.whereIn('tradeId', tradeIds.pluck('tradeId')).get();
+
+        response.json({
+            trades: trades,
+            tradeItems: tradeItems.groupBy('tradeId')
+        });
+    }
+
     async save(request, response)
     {
         const { id: userId } = session.validateToken(request);
