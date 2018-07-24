@@ -86,6 +86,8 @@ class TradeController
 
     async paginate(request, response)
     {
+        const { id: userId } = session.validateToken(request);
+
         validation.run(request.body, {
             platform: [{rule: validation.rules.isPresent}],
             page: [{rule: validation.rules.isInt}],
@@ -99,6 +101,7 @@ class TradeController
             .distinct()
             .join('trades', 'tradeItems.tradeId', '=', 'trades.id')
             .where('tradeItems.type', '=', type)
+            .where('trades.userId', '!=', userId)
             .limit(10)
             .offset((page - 1) * 10);
 
