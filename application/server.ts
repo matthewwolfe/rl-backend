@@ -7,7 +7,14 @@ import webRoutes from 'routes/web';
 import websocket from 'websocket';
 
 
-DB.create('127.0.0.1', process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_HOST);
+DB.create({
+    host: '127.0.0.1',
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: 'RLDB',
+    name: 'rldb',
+    port: 3333
+});
 
 
 const httpServer = express();
