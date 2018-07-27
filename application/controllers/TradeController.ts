@@ -100,7 +100,7 @@ class TradeController
         const query = TradeItem.select(['tradeItems.tradeId'])
             .distinct()
             .join('trades', 'tradeItems.tradeId', '=', 'trades.id')
-            .where('tradeItems.type', '=', type)
+            .where('tradeItems.type', '!=', type)
             .where('trades.userId', '!=', userId)
             .limit(10)
             .offset((page - 1) * 10);
