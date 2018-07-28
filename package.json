@@ -22,7 +22,7 @@
     "@types/node": "10.5.1",
     "@types/validator": "9.4.1",
     "@types/ws": "5.1.2",
-    "active-record-js": "2.0.15",
+    "active-record-js": "2.0.18",
     "bcrypt": "2.0.1",
     "dotenv": "5.0.1",
     "express": "4.16.3",

@@ -101,9 +101,7 @@ class TradeController
             .distinct()
             .join('trades', 'tradeItems.tradeId', '=', 'trades.id')
             .where('tradeItems.type', '!=', type)
-            .where('trades.userId', '!=', userId)
-            .limit(10)
-            .offset((page - 1) * 10);
+            .where('trades.userId', '!=', userId);
 
         if (platform) {
             query.where('trades.platform', '=', platform);
@@ -117,13 +115,15 @@ class TradeController
             }
         });
 
-        const tradeIds = await query.get();
+        const pagination = await query.paginate({limit: 10, page: page});
+        const tradeIds = pagination.data.pluck('tradeId');
+        
         let trades = [];
         let tradeItems: any = {};
 
         if (tradeIds.length > 0) {
-            trades = await Trade.whereIn('id', tradeIds.pluck('tradeId')).get();
-            tradeItems = await TradeItem.whereIn('tradeId', tradeIds.pluck('tradeId')).get();
+            trades = await Trade.whereIn('id', tradeIds).get();
+            tradeItems = await TradeItem.whereIn('tradeId', tradeIds).get();
             tradeItems = tradeItems.groupBy('tradeId');
         }
 

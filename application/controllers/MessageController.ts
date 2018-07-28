@@ -6,6 +6,8 @@ class MessageController
     async conversations(request, response)
     {
         const user = await session.getUser(request);
+        console.log(user.messages());
+
         const messages = await user.messages().where('userId', '=', user.id).orWhere('recipientId', '=', user.id).get();
 
         response.json({
