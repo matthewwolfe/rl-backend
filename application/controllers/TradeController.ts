@@ -100,8 +100,11 @@ class TradeController
         const query = TradeItem.select(['tradeItems.tradeId'])
             .distinct()
             .join('trades', 'tradeItems.tradeId', '=', 'trades.id')
-            .where('tradeItems.type', '!=', type)
             .where('trades.userId', '!=', userId);
+
+        if (type) {
+            query.where('tradeItems.type', '!=', type);
+        }
 
         if (platform) {
             query.where('trades.platform', '=', platform);
@@ -117,7 +120,7 @@ class TradeController
 
         const pagination = await query.paginate({limit: 10, page: page});
         const tradeIds = pagination.data.pluck('tradeId');
-        
+
         let trades = [];
         let tradeItems: any = {};
 
